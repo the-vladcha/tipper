@@ -1,0 +1,62 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<table class="table table-bordered">
+    <thead>
+    <tr>
+        <th scope="col">бортовой номер</th>
+        <th scope="col">модель</th>
+        <th scope="col">макс. грузоподъемность</th>
+        <th scope="col">текущий вес</th>
+        <th scope="col">перегруз, %</th>
+        <th scope="col">координаты разгрузки (x y)</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for tipper in tippers %}
+    <tr>
+        <td>{{ tipper.board_number }}</td>
+        <td>{{ tipper.model }}</td>
+        <td>{{ tipper.max_load_capacity }}</td>
+        <td>{{ tipper.cargo }}</td>
+        <td>
+            {% if tipper.overcargo > 0 %}
+                {{ tipper.overcargo }}
+            {% else %}
+                0
+            {% endif %}
+        </td>
+        <td>
+            <form action="/your-name/" method="post">
+                <input id="your_name" type="text" name="your_name" value="{{ current_name }}">
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+<form method="post" style="margin: 10px">
+    {% csrf_token %}
+    <button type="submit" class="btn btn-success">Рассчитать</button>
+</form>
+<table class="table table-hover">
+    <thead>
+    <tr>
+        <th scope="col">Название склада</th>
+        <th scope="col">Объем до разгрузки, т</th>
+        <th scope="col">Объем после разгрузки, т</th>
+        <th scope="col">Качественные хар-ки после разгрузки</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for storage in storages %}
+    <tr>
+        <td>{{ storage.name }}</td>
+        <td>{{ storage.fullness }}</td>
+        <td>{{ storage.fullness }}</td>
+        <td>{{ storage.cargo_characteristics.sio2 }}% SiO2, {{ storage.cargo_characteristics.fe }}% Fe</td>
+    </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
